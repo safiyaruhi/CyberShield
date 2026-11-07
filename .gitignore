@@ -1,0 +1,18 @@
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Python environments
+venv/
+.venv/
+env/
+
+# Dataset files
+ml-service/dataset/
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# Temporary files
+*.log
+.DS_Store
