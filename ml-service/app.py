@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import joblib
 import pandas as pd
+import hashlib
 
 from feature_extraction import extract_features, FEATURE_NAMES
 
@@ -14,8 +15,12 @@ MODEL_PATH = "models/phishing_model.pkl"
 bundle = joblib.load(MODEL_PATH)
 model = bundle["model"]
 
-print("Loaded model:", bundle["model_name"])
+# Generate a unique fingerprint for the loaded model file
+with open(MODEL_PATH, "rb") as file:
+    MODEL_SHA256 = hashlib.sha256(file.read()).hexdigest()
 
+print("Loaded model:", bundle["model_name"])
+print("Model SHA256:", MODEL_SHA256)
 def generate_reasons(features, prediction):
     reasons = []
 
@@ -61,7 +66,8 @@ def health():
         "status": "success",
         "message": "CyberShield ML service is running",
         "model_file": MODEL_PATH,
-        "model_name": bundle["model_name"]
+        "model_name": bundle["model_name"],
+        "model_sha256": MODEL_SHA256
     })
 
 @app.route("/predict", methods=["POST"])
