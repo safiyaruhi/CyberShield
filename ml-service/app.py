@@ -9,13 +9,12 @@ from feature_extraction import extract_features, FEATURE_NAMES
 app = Flask(__name__)
 CORS(app)
 
-# Load the trained model once when the API starts
-bundle = joblib.load("models/phishing_model.pkl")
+MODEL_PATH = "models/phishing_model.pkl"
+
+bundle = joblib.load(MODEL_PATH)
 model = bundle["model"]
 
 print("Loaded model:", bundle["model_name"])
-
-
 
 def generate_reasons(features, prediction):
     reasons = []
@@ -56,14 +55,14 @@ def generate_reasons(features, prediction):
 
     return reasons
 
-
 @app.route("/health", methods=["GET"])
 def health():
     return jsonify({
         "status": "success",
-        "message": "CyberShield ML service is running"
+        "message": "CyberShield ML service is running",
+        "model_file": MODEL_PATH,
+        "model_name": bundle["model_name"]
     })
-
 
 @app.route("/predict", methods=["POST"])
 def predict():
